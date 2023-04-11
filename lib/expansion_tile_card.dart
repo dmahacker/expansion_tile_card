@@ -51,6 +51,7 @@ class ExpansionTileCard extends StatefulWidget {
     this.duration = const Duration(milliseconds: 200),
     this.elevationCurve = Curves.easeOut,
     this.heightFactorCurve = Curves.easeIn,
+    this.heightFactorReverseCurve = Curves.easeOut,
     this.turnsCurve = Curves.easeIn,
     this.colorCurve = Curves.easeIn,
     this.paddingCurve = Curves.easeIn,
@@ -160,10 +161,15 @@ class ExpansionTileCard extends StatefulWidget {
   /// Defaults to Curves.easeOut.
   final Curve elevationCurve;
 
-  /// The animation curve used to control the height of the expanding/collapsing card.
+  /// The animation curve used to control the height of the expanding/collapsing(if reverse curve not set) card.
   ///
   /// Defaults to Curves.easeIn.
   final Curve heightFactorCurve;
+
+  /// The animation curve used to control the height of the collapsing(if set) card.
+  ///
+  /// Defaults to Curves.easeOut.
+  final Curve? heightFactorReverseCurve;
 
   /// The animation curve used to control the rotation of the `trailing` widget.
   ///
@@ -194,7 +200,6 @@ class ExpansionTileCardState extends State<ExpansionTileCard>
   final ColorTween _materialColorTween = ColorTween();
   late EdgeInsetsTween _edgeInsetsTween;
   late Animatable<double> _elevationTween;
-  late Animatable<double> _heightFactorTween;
   late Animatable<double> _turnsTween;
   late Animatable<double> _colorTween;
   late Animatable<double> _paddingTween;
@@ -218,13 +223,16 @@ class ExpansionTileCardState extends State<ExpansionTileCard>
       end: widget.finalPadding as EdgeInsets?,
     );
     _elevationTween = CurveTween(curve: widget.elevationCurve);
-    _heightFactorTween = CurveTween(curve: widget.heightFactorCurve);
     _colorTween = CurveTween(curve: widget.colorCurve);
     _turnsTween = CurveTween(curve: widget.turnsCurve);
     _paddingTween = CurveTween(curve: widget.paddingCurve);
 
     _controller = AnimationController(duration: widget.duration, vsync: this);
-    _heightFactor = _controller.drive(_heightFactorTween);
+    _heightFactor = CurvedAnimation(
+      parent: _controller,
+      curve: widget.heightFactorCurve,
+      reverseCurve: widget.heightFactorReverseCurve,
+    );
     _iconTurns = _controller.drive(_halfTween.chain(_turnsTween));
     _headerColor = _controller.drive(_headerColorTween.chain(_colorTween));
     _materialColor = _controller.drive(_materialColorTween.chain(_colorTween));
