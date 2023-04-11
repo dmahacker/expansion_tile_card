@@ -53,6 +53,7 @@ class ExpansionTileCard extends StatefulWidget {
     this.heightFactorCurve = Curves.easeIn,
     this.heightFactorReverseCurve,
     this.turnsCurve = Curves.easeIn,
+    this.turnsReverseCurve,
     this.colorCurve = Curves.easeIn,
     this.paddingCurve = Curves.easeIn,
     this.isThreeLine = false,
@@ -176,6 +177,11 @@ class ExpansionTileCard extends StatefulWidget {
   /// Defaults to Curves.easeIn.
   final Curve turnsCurve;
 
+  /// The animation curve used to control the reverse rotation of the `trailing` widget.
+  ///
+  /// Defaults to null.
+  final Curve? turnsReverseCurve;
+
   /// The animation curve used to control the header, icon, and material colors.
   ///
   /// Defaults to Curves.easeIn.
@@ -200,7 +206,6 @@ class ExpansionTileCardState extends State<ExpansionTileCard>
   final ColorTween _materialColorTween = ColorTween();
   late EdgeInsetsTween _edgeInsetsTween;
   late Animatable<double> _elevationTween;
-  late Animatable<double> _turnsTween;
   late Animatable<double> _colorTween;
   late Animatable<double> _paddingTween;
 
@@ -224,7 +229,6 @@ class ExpansionTileCardState extends State<ExpansionTileCard>
     );
     _elevationTween = CurveTween(curve: widget.elevationCurve);
     _colorTween = CurveTween(curve: widget.colorCurve);
-    _turnsTween = CurveTween(curve: widget.turnsCurve);
     _paddingTween = CurveTween(curve: widget.paddingCurve);
 
     _controller = AnimationController(duration: widget.duration, vsync: this);
@@ -233,7 +237,11 @@ class ExpansionTileCardState extends State<ExpansionTileCard>
       curve: widget.heightFactorCurve,
       reverseCurve: widget.heightFactorReverseCurve,
     );
-    _iconTurns = _controller.drive(_halfTween.chain(_turnsTween));
+    _iconTurns = CurvedAnimation(
+      parent: _controller,
+      curve: widget.turnsCurve,
+      reverseCurve: widget.turnsReverseCurve,
+    );
     _headerColor = _controller.drive(_headerColorTween.chain(_colorTween));
     _materialColor = _controller.drive(_materialColorTween.chain(_colorTween));
     _iconColor = _controller.drive(_iconColorTween.chain(_colorTween));
