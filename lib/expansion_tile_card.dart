@@ -51,7 +51,7 @@ class ExpansionTileCard extends StatefulWidget {
     this.duration = const Duration(milliseconds: 200),
     this.elevationCurve = Curves.easeOut,
     this.heightFactorCurve = Curves.easeIn,
-    this.heightFactorReverseCurve = Curves.easeOut,
+    this.heightFactorReverseCurve,
     this.turnsCurve = Curves.easeIn,
     this.colorCurve = Curves.easeIn,
     this.paddingCurve = Curves.easeIn,
@@ -168,7 +168,7 @@ class ExpansionTileCard extends StatefulWidget {
 
   /// The animation curve used to control the height of the collapsing(if set) card.
   ///
-  /// Defaults to Curves.easeOut.
+  /// Defaults to null.
   final Curve? heightFactorReverseCurve;
 
   /// The animation curve used to control the rotation of the `trailing` widget.
